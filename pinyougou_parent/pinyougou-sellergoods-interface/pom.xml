@@ -11,10 +11,10 @@
 
     <artifactId>pinyougou-sellergoods-interface</artifactId>
     <dependencies>
-        <!--依赖dao-->
+        <!--依赖pojo-->
         <dependency>
             <groupId>com.practice.pinyougou</groupId>
-            <artifactId>pinyougou-dao</artifactId>
+            <artifactId>pinyougou-pojo</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

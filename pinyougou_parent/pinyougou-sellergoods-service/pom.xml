@@ -18,6 +18,12 @@
             <artifactId>pinyougou-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!--依赖dao-->
+        <dependency>
+            <groupId>com.practice.pinyougou</groupId>
+            <artifactId>pinyougou-dao</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--依赖interface-->
         <dependency>
             <groupId>com.practice.pinyougou</groupId>
