@@ -105,11 +105,17 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
 
     };
 
+    //显示模板名称
+    $scope.typeTemplateMap = [];
     //查询模板列表
     $scope.findTypeTemplateList = function () {
         typeTemplateService.findAll().success(function (response) {
             $scope.typeTemplateList = response;
 
+            for(var i=0;i<$scope.typeTemplateList.length;i++){
+                var typeTemplate = $scope.typeTemplateList[i];
+                $scope.typeTemplateMap[typeTemplate.id] = typeTemplate.name;
+            }
         });
 
     };
