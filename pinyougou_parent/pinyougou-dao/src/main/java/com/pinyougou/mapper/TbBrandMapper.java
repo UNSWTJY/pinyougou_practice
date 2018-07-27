@@ -30,5 +30,9 @@ public interface TbBrandMapper {
 
     int updateByPrimaryKey(TbBrand record);
 
+    /**
+     * 下拉列表数据
+     * @return
+     */
     List<Map> selectOptionList();
 }

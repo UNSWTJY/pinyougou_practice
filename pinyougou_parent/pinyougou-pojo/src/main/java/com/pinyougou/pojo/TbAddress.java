@@ -3,8 +3,7 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbAddress implements Serializable {
-    private static final long serialVersionUID = -8088389571629624572L;
+public class TbAddress implements Serializable{
     private Long id;
 
     private String userId;

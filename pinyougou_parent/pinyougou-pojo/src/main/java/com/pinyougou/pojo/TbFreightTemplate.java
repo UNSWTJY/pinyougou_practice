@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TbFreightTemplate implements Serializable {
-    private static final long serialVersionUID = 3577990800376142136L;
     private Long id;
 
     private String sellerId;

@@ -3,7 +3,6 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 
 public class TbContentCategory implements Serializable {
-    private static final long serialVersionUID = 4834278391950820302L;
     private Long id;
 
     private String name;

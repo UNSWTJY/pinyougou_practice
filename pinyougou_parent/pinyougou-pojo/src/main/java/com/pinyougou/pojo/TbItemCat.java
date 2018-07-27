@@ -3,7 +3,6 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 
 public class TbItemCat implements Serializable {
-    private static final long serialVersionUID = 1900106172247412239L;
     private Long id;
 
     private Long parentId;

@@ -3,7 +3,7 @@ package com.pinyougou.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TbBrandExample  {
+public class TbBrandExample {
     protected String orderByClause;
 
     protected boolean distinct;

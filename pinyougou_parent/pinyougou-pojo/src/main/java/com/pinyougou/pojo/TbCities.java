@@ -3,7 +3,6 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 
 public class TbCities implements Serializable {
-    private static final long serialVersionUID = -7990455747809355197L;
     private Integer id;
 
     private String cityid;

@@ -3,7 +3,6 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 
 public class TbSpecificationOption implements Serializable {
-    private static final long serialVersionUID = -4457562384872124956L;
     private Long id;
 
     private String optionName;

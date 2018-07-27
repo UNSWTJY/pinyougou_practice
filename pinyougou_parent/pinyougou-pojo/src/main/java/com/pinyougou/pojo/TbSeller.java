@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TbSeller implements Serializable {
-    private static final long serialVersionUID = -1086486536306311654L;
     private String sellerId;
 
     private String name;

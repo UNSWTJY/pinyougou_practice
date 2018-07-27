@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TbUser implements Serializable {
-    private static final long serialVersionUID = 7309788684534237560L;
     private Long id;
 
     private String username;
