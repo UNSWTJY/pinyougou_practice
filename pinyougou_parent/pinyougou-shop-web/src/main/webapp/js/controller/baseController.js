@@ -30,16 +30,28 @@ app.controller('baseController', function ($scope) {
     $scope.searchEntity = {};
 
     //提取json数据
-    $scope.jsonToString = function (jsonString,key) {
+    $scope.jsonToString = function (jsonString, key) {
         var json = JSON.parse(jsonString);
         var value = "";
-        for(var i=0;i<json.length;i++){
+        for (var i = 0; i < json.length; i++) {
             if (i > 0) {
                 value += ",";
             }
             value += json[i][key];
         }
         return value;
+
+    };
+
+    //判断集合list是否有key值为value的specItem
+    $scope.searchObjectByKey = function (list, key, value) {
+
+        for (var i = 0; i < list.length; i++) {
+            if (list[i][key] == value) {
+                return list[i];
+            }
+        }
+        return null;
 
     };
 
