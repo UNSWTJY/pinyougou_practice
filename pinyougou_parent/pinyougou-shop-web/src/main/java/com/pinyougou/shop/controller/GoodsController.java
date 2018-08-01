@@ -112,8 +112,9 @@ public class GoodsController {
      */
     @RequestMapping("/delete")
     public Result delete(Long[] ids) {
+        String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            goodsService.delete(ids);
+            goodsService.delete(ids, sellerId);
             return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,6 +136,21 @@ public class GoodsController {
         String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
         goods.setSellerId(sellerId);
         return goodsService.findPage(goods, page, rows);
+    }
+
+    /**
+     * 更新上下架状态
+     */
+    @RequestMapping("/updateIsMarketable")
+    public Result updateIsMarketable(Long[] ids, String isMarketable) {
+        String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            goodsService.updateIsMarketable(ids, isMarketable, sellerId);
+            return new Result(true, "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "操作失败");
+        }
     }
 
 }

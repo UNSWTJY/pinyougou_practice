@@ -304,4 +304,17 @@ app.controller('goodsController', function ($scope, $controller, $location, good
 
     };
 
+    $scope.updateIsMarketable = function (isMarketable) {
+        goodsService.updateIsMarketable($scope.selectIds, isMarketable).success(function (response) {
+            if (response.success) {
+                $scope.reloadList();
+                $scope.selectIds = [];
+            } else {
+                alert(response.message);
+            }
+
+        });
+
+    };
+
 });	
