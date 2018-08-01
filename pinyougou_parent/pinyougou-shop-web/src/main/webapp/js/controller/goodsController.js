@@ -98,7 +98,6 @@ app.controller('goodsController', function ($scope, $controller, $location, good
     //上传图片
     $scope.uploadFile = function () {
         uploadService.uploadFile().success(function (response) {
-            alert(response);
             if (response.error == 0) {
                 $scope.image_entity.url = response.url;
             } else {
@@ -279,7 +278,7 @@ app.controller('goodsController', function ($scope, $controller, $location, good
             //获取规格列表
             $scope.entity.goodsDesc.specificationItems = JSON.parse($scope.entity.goodsDesc.specificationItems);
             //循环显示SKU列表
-            for(var i=0;i<$scope.entity.itemList.length;i++){
+            for (var i = 0; i < $scope.entity.itemList.length; i++) {
                 $scope.entity.itemList[i].spec = JSON.parse($scope.entity.itemList[i].spec);
             }
 
