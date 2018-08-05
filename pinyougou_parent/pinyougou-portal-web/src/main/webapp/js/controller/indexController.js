@@ -11,4 +11,9 @@ app.controller('indexController', function ($scope, contentService) {
 
     };
 
+    $scope.search = function () {
+        location.href = "http://localhost:9104/search.html#?keywords=" + $scope.keywords;
+
+    };
+
 });

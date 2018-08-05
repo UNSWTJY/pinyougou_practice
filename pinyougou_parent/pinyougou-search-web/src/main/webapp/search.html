@@ -10,13 +10,15 @@
     <link rel="stylesheet" type="text/css" href="css/webbase.css"/>
     <link rel="stylesheet" type="text/css" href="css/pages-list.css"/>
     <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css"/>
+    <script src="plugins/jquery/jquery.min.js"></script>
     <script src="plugins/angularjs/angular.min.js"></script>
+    <script src="plugins/angularjs/ng-infinite-scroll.min.js"></script>
     <script src="js/base.js"></script>
     <script src="js/service/searchService.js"></script>
     <script src="js/controller/searchController.js"></script>
 </head>
 
-<body ng-app="pinyougou" ng-controller="searchController">
+<body ng-app="pinyougou" ng-controller="searchController" ng-init="loadKeywords()">
 <!-- 头部栏位 -->
 <!--页面顶部-->
 <div id="nav-bottom">
@@ -145,7 +147,7 @@
 
 <!--list-content-->
 <div class="main">
-    <div class="py-container">
+    <div class="py-container" infinite-scroll="searchpage()">
         <!--bread-->
         <div class="bread">
             <ul class="fl sui-breadcrumb">
@@ -158,6 +160,11 @@
                 <li class="tag" ng-click="removeSearchMap('brand')" ng-if="searchMap.brand!=''">品牌：{{searchMap.brand}}<i class="sui-icon icon-tb-close"></i></li>
                 <li class="tag" ng-click="removeSearchMap(key)" ng-repeat="(key,value) in searchMap.spec">{{key}}:{{value}}<i class="sui-icon icon-tb-close"></i></li>
                 <li class="tag" ng-click="removeSearchMap('price')" ng-if="searchMap.price!=''">价格区间：{{searchMap.price}}<i class="sui-icon icon-tb-close"></i></li>
+            </ul>
+            <ul class="fl sui-breadcrumb">
+                <li>
+                    搜索结果：共{{resultMap.total}}条记录
+                </li>
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -172,7 +179,7 @@
                 </div>
                 <div class="fl ext"></div>
             </div>
-            <div class="type-wrap logo" ng-if="resultMap.brandList!=null && searchMap.brand==''">
+            <div class="type-wrap logo" ng-if="resultMap.brandList!=null && searchMap.brand=='' && keywordsIsBrand()==false">
                 <div class="fl key brand">品牌</div>
                 <div class="value logos">
                     <ul class="logo-list">
@@ -254,20 +261,23 @@
             <div class="sui-navbar">
                 <div class="navbar-inner filter">
                     <ul class="sui-nav">
-                        <li class="active">
-                            <a href="#">综合</a>
+                        <li class="{{activeClass[0]}}">
+                            <a href="#" ng-click="sortSearch('','');setActiveClass(0)">综合</a>
                         </li>
-                        <li>
+                        <li class="{{activeClass[1]}}">
                             <a href="#">销量</a>
                         </li>
-                        <li>
+                        <li class="{{activeClass[2]}}">
                             <a href="#">新品</a>
                         </li>
-                        <li>
+                        <li class="{{activeClass[3]}}">
                             <a href="#">评价</a>
                         </li>
-                        <li>
-                            <a href="#">价格</a>
+                        <li class="{{activeClass[4]}}">
+                            <a href="#" ng-click="sortSearch('price','ASC');setActiveClass(4)">价格↑</a>
+                        </li>
+                        <li class="{{activeClass[5]}}">
+                            <a href="#" ng-click="sortSearch('price','DESC');setActiveClass(5)">价格↓</a>
                         </li>
                     </ul>
                 </div>
@@ -285,7 +295,7 @@
                                     <i>{{item.price}}</i>
                                 </strong>
                             </div>
-                            <div class="attr">
+                            <div class="attr" ng-bind-html="item.title|trustAsHtml">
                                 <em>{{item.title}}</em>
                             </div>
                             <div class="cu">
@@ -302,38 +312,6 @@
                         </div>
                     </li>
                 </ul>
-            </div>
-            <div class="fr page">
-                <div class="sui-pagination pagination-large">
-                    <ul>
-                        <li class="prev disabled">
-                            <a href="#">«上一页</a>
-                        </li>
-                        <li class="active">
-                            <a href="#">1</a>
-                        </li>
-                        <li>
-                            <a href="#">2</a>
-                        </li>
-                        <li>
-                            <a href="#">3</a>
-                        </li>
-                        <li>
-                            <a href="#">4</a>
-                        </li>
-                        <li>
-                            <a href="#">5</a>
-                        </li>
-                        <li class="dotted"><span>...</span></li>
-                        <li class="next">
-                            <a href="#">下一页»</a>
-                        </li>
-                    </ul>
-                    <div><span>共10页&nbsp;</span><span>
-      到第
-      <input type="text" class="page-num">
-      页 <button class="page-confirm" onclick="alert(1)">确定</button></span></div>
-                </div>
             </div>
         </div>
         <!--hotsale-->

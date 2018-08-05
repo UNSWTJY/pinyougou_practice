@@ -2,7 +2,9 @@ package com.pinyougou.shop.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojogroup.Goods;
+import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 import entity.PageResult;
 import entity.Result;
@@ -24,6 +26,9 @@ public class GoodsController {
 
     @Reference
     private GoodsService goodsService;
+
+    @Reference
+    private ItemSearchService itemSearchService;
 
     /**
      * 返回全部列表
@@ -146,6 +151,12 @@ public class GoodsController {
         String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
             goodsService.updateIsMarketable(ids, isMarketable, sellerId);
+            if (isMarketable.equals("1")) {
+                List<TbItem> itemList = goodsService.findItemListByGoodsId(ids);
+                itemSearchService.importList(itemList);
+            } else {
+                itemSearchService.deleteByGoodsIds(ids);
+            }
             return new Result(true, "操作成功");
         } catch (Exception e) {
             e.printStackTrace();

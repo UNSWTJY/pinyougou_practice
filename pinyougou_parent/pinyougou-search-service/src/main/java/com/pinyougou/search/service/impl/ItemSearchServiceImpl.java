@@ -5,18 +5,13 @@ import com.pinyougou.pojo.TbItem;
 import com.pinyougou.search.service.ItemSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
-import org.springframework.data.solr.core.query.result.GroupEntry;
-import org.springframework.data.solr.core.query.result.GroupPage;
-import org.springframework.data.solr.core.query.result.GroupResult;
-import org.springframework.data.solr.core.query.result.ScoredPage;
+import org.springframework.data.solr.core.query.result.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ItemSearchServiceImpl implements ItemSearchService {
@@ -29,6 +24,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Override
     public Map<String, Object> search(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
+        //处理空格
+        String keywords = (String) searchMap.get("keywords");
+        searchMap.put("keywords", keywords.replace(" ", ""));
         //1.关键字查询
         map.putAll(searchItemList(searchMap));
         //2.根据关键字查询商品分类列表
@@ -48,6 +46,21 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         return map;
     }
 
+    @Override
+    public void importList(List list) {
+        solrTemplate.saveBeans(list);
+        solrTemplate.commit();
+    }
+
+    @Override
+    public void deleteByGoodsIds(Long[] goodsIds) {
+        Query query = new SimpleQuery();
+        Criteria criteria = new Criteria("item_goodsid").in(Arrays.asList(goodsIds));
+        query.addCriteria(criteria);
+        solrTemplate.delete(query);
+        solrTemplate.commit();
+    }
+
     /**
      * 关键字查询
      *
@@ -57,7 +70,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     private Map<String, Object> searchItemList(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
         //1.关键字查询
-        Query query = new SimpleQuery();
+        //Query query = new SimpleQuery();
+        HighlightQuery query = new SimpleHighlightQuery();
         Criteria criteria = new Criteria("item_keywords").is(searchMap.get("keywords"));
         query.addCriteria(criteria);
         //2.分类筛选
@@ -97,8 +111,52 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             }
         }
 
+        //6.分页查询
+        Integer pageNum = (Integer) searchMap.get("pageNum");
+        Integer pageSize = (Integer) searchMap.get("pageSize");
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 20;
+        }
+        query.setOffset((pageNum - 1) * pageSize);
+        query.setRows(pageSize);
+
+        //7.排序
+        String sortType = (String) searchMap.get("sort");
+        String sortField = (String) searchMap.get("sortField");
+        if (sortType != null && !sortType.equals("")) {
+            if (sortType.equalsIgnoreCase("ASC")) {
+                Sort sort = new Sort(Sort.Direction.ASC, "item_" + sortField);
+                query.addSort(sort);
+            }
+            if (sortType.equalsIgnoreCase("DESC")) {
+                Sort sort = new Sort(Sort.Direction.DESC, "item_" + sortField);
+                query.addSort(sort);
+            }
+        }
+
+        //8.高亮查询
+        HighlightOptions highlightOptions = new HighlightOptions().addField("item_title");
+        highlightOptions.setSimplePrefix("<em style='color:red'>");
+        highlightOptions.setSimplePostfix("</em>");
+        query.setHighlightOptions(highlightOptions);
+        //查询
+        HighlightPage<TbItem> highlightPage = solrTemplate.queryForHighlightPage(query, TbItem.class);
+        List<HighlightEntry<TbItem>> highlighted = highlightPage.getHighlighted();
+        for (HighlightEntry<TbItem> entry : highlighted) {
+            TbItem item = entry.getEntity();
+            if (entry.getHighlights().size() > 0 && entry.getHighlights().get(0).getSnipplets().size() > 0) {
+                item.setTitle(entry.getHighlights().get(0).getSnipplets().get(0));
+            }
+
+        }
+
         ScoredPage<TbItem> page = solrTemplate.queryForPage(query, TbItem.class);
         map.put("rows", page.getContent());
+        map.put("totalPages", page.getTotalPages());
+        map.put("total", page.getTotalElements());
         return map;
     }
 
