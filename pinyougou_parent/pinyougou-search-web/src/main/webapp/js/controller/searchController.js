@@ -1,8 +1,8 @@
-app.controller('searchController', function ($scope, $location,searchService) {
+app.controller('searchController', function ($scope, $location, searchService) {
     //搜索
     $scope.search = function () {
         if ($scope.searchMap.keywords != "") {
-            $scope.searchMap.pageNum=1;
+            $scope.searchMap.pageNum = 1;
             searchService.search($scope.searchMap).success(function (response) {
                 $scope.resultMap = response;
 
@@ -85,7 +85,7 @@ app.controller('searchController', function ($scope, $location,searchService) {
     //隐藏品牌列表
     $scope.keywordsIsBrand = function () {
         for (var i = 0; i < $scope.resultMap.brandList.length; i++) {
-            if ($scope.searchMap.keywords.indexOf($scope.resultMap.brandList[i] >= 0)) {
+            if ($scope.searchMap.keywords.indexOf($scope.resultMap.brandList[i].text) >= 0) {
                 return true;
             }
         }

@@ -278,7 +278,13 @@ public class GoodsServiceImpl implements GoodsService {
         TbItemExample.Criteria criteria = example.createCriteria();
         criteria.andGoodsIdIn(Arrays.asList(goodsIds));
         criteria.andStatusEqualTo("1");
-        return itemMapper.selectByExample(example);
+        List<TbItem> items = itemMapper.selectByExample(example);
+        for (TbItem item : items) {
+            Map specMap = JSON.parseObject(item.getSpec());
+            item.setSpecMap(specMap);
+
+        }
+        return items;
     }
 
 }
