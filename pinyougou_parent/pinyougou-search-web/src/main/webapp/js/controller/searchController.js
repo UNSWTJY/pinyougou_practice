@@ -96,7 +96,9 @@ app.controller('searchController', function ($scope, $location, searchService) {
     //与首页对接
     $scope.loadKeywords = function () {
         $scope.searchMap.keywords = $location.search()["keywords"];
-        $scope.search();
+        if ($scope.searchMap.keywords != null && $scope.searchMap.keywords != '') {
+            $scope.search();
+        }
 
     };
 

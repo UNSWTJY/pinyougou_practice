@@ -72,7 +72,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         //1.关键字查询
         //Query query = new SimpleQuery();
         HighlightQuery query = new SimpleHighlightQuery();
-        Criteria criteria = new Criteria("item_keywords").is(searchMap.get("keywords"));
+        String keywords = (String) searchMap.get("keywords");
+        Criteria criteria = new Criteria("item_keywords").is(keywords);
         query.addCriteria(criteria);
         //2.分类筛选
         if (!"".equals(searchMap.get("category"))) {
@@ -147,16 +148,18 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         List<HighlightEntry<TbItem>> highlighted = highlightPage.getHighlighted();
         for (HighlightEntry<TbItem> entry : highlighted) {
             TbItem item = entry.getEntity();
-            if (entry.getHighlights().size() > 0 && entry.getHighlights().get(0).getSnipplets().size() > 0) {
-                item.setTitle(entry.getHighlights().get(0).getSnipplets().get(0));
+            List<HighlightEntry.Highlight> highlights = entry.getHighlights();
+
+            if (highlights.size() > 0 && highlights.get(0).getSnipplets().size() > 0) {
+                item.setTitle(highlights.get(0).getSnipplets().get(0));
             }
 
         }
 
-        ScoredPage<TbItem> page = solrTemplate.queryForPage(query, TbItem.class);
-        map.put("rows", page.getContent());
-        map.put("totalPages", page.getTotalPages());
-        map.put("total", page.getTotalElements());
+        //ScoredPage<TbItem> page = solrTemplate.queryForPage(query, TbItem.class);
+        map.put("rows", highlightPage.getContent());
+        map.put("totalPages", highlightPage.getTotalPages());
+        map.put("total", highlightPage.getTotalElements());
         return map;
     }
 
