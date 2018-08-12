@@ -1,6 +1,7 @@
 package com.pinyougou.shop.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojogroup.Goods;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -153,7 +155,13 @@ public class GoodsController {
             goodsService.updateIsMarketable(ids, isMarketable, sellerId);
             if (isMarketable.equals("1")) {
                 List<TbItem> itemList = goodsService.findItemListByGoodsId(ids);
-                itemSearchService.importList(itemList);
+                if (itemList.size() > 0) {
+                    itemSearchService.importList(itemList);
+                    //上架后生成商品详细页
+                    for (Long id : ids) {
+                        itemPageService.genItemHtml(id);
+                    }
+                }
             } else {
                 itemSearchService.deleteByGoodsIds(ids);
             }
@@ -162,6 +170,14 @@ public class GoodsController {
             e.printStackTrace();
             return new Result(false, "操作失败");
         }
+    }
+
+    @Reference
+    private ItemPageService itemPageService;
+
+    @RequestMapping("/genHtml")
+    public void genHtml(Long goodsId) {
+        itemPageService.genItemHtml(goodsId);
     }
 
 }
